@@ -7,6 +7,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Manufacturer
@@ -33,6 +34,7 @@ class Manufacturer
      * 
      * @ORM\Column
      */
+    #[Assert\NotBlank]
     private string $name = "";
 
     /**
@@ -40,18 +42,21 @@ class Manufacturer
      *
      * @ORM\Column(type="text")
      */
+    #[Assert\NotBlank]
     private string $description = "";
 
     /** the country code of the manufacturer 
      * 
      * @ORM\Column(length=3)
      */
+    #[Assert\NotBlank]
     private string $countryCode;
 
     /** the date manufacturer was listed 
-     * 
+     *
      * @ORM\Column(type="datetime")
      */
+    #[Assert\NotNull]
     private ?\DateTimeInterface $listedDate = null;
 
     /**
@@ -105,5 +110,13 @@ class Manufacturer
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * Get *@var Product[] Available products from this manufacturer,
+     */
+    public function getProducts(): iterable
+    {
+        return $this->products;
     }
 }

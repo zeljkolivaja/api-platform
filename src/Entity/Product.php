@@ -7,6 +7,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use DateTimeInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -33,12 +34,14 @@ class Product
      *
      * @ORM\Column
      */
-    private ?string $partNumber = '';
+    #[Assert\NotNull()]
+    private ?string $partNumber = null;
 
     /**
      * name of the the product
      * @ORM\Column 
      */
+    #[Assert\NotBlank()]
     private string $name = '';
 
     /**
@@ -46,6 +49,7 @@ class Product
      *
      * @ORM\Column(type="text")
      */
+    #[Assert\NotBlank()]
     private string $description = '';
 
 
@@ -55,6 +59,7 @@ class Product
      * @var \DateTimeInterface|null
      * @ORM\Column(type="datetime")
      */
+    #[Assert\NotNull()]
     private ?\DateTimeInterface $issueDate = null;
 
 
@@ -63,6 +68,7 @@ class Product
      * 
      * @ORM\ManyToOne(targetEntity="Manufacturer", inversedBy="product")
      */
+    #[Assert\NotNull()]
     private ?Manufacturer $manufacturer = null;
 
     public function getId(): ?int
