@@ -10,6 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use DateTimeInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -20,7 +21,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 
 #[
-    ApiResource(),
+    ApiResource(
+        normalizationContext: ['groups' => ['product.read']],
+        denormalizationContext: ['groups' => ['product.write']]
+    ),
     ApiFilter(
         SearchFilter::class,
         properties: [
@@ -59,7 +63,10 @@ class Product
      * name of the the product
      * @ORM\Column 
      */
-    #[Assert\NotBlank()]
+    #[
+        Assert\NotBlank(),
+        Groups(['product.read', 'product.write'])
+    ]
     private string $name = '';
 
     /**
@@ -67,7 +74,10 @@ class Product
      *
      * @ORM\Column(type="text")
      */
-    #[Assert\NotBlank()]
+    #[
+        Assert\NotBlank(),
+        Groups(['product.read', 'product.write'])
+    ]
     private string $description = '';
 
 
@@ -77,16 +87,22 @@ class Product
      * @var \DateTimeInterface|null
      * @ORM\Column(type="datetime")
      */
-    #[Assert\NotNull()]
+    #[
+        Assert\NotNull(),
+        Groups(['product.read', 'product.write'])
+    ]
     private ?\DateTimeInterface $issueDate = null;
 
 
     /**
      * The manufacturer of the product
      * 
-     * @ORM\ManyToOne(targetEntity="Manufacturer", inversedBy="product")
+     * @ORM\ManyToOne(targetEntity="Manufacturer", inversedBy="products")
      */
-    #[Assert\NotNull()]
+    #[
+        Assert\NotNull(),
+        Groups(['product.read'])
+    ]
     private ?Manufacturer $manufacturer = null;
 
     public function getId(): ?int
