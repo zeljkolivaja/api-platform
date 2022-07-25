@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -74,6 +75,7 @@ class Manufacturer
      *@ORM\OneToMany(targetEntity="Product", mappedBy="manufacturer", cascade={"persist", "remove"})
      * 
      */
+    #[ApiSubresource()]
     private iterable $products;
 
     public function getName()
