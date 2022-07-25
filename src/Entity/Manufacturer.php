@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  */
 #[ApiResource(
+    attributes: ["pagination_items_per_page" => 5],
     collectionOperations: ['get', 'post'],
     itemOperations: ['get', 'put', 'patch']
 )]
