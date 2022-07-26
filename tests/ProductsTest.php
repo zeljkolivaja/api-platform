@@ -80,4 +80,42 @@ class ProductTest extends ApiTestCase
             'issueDate'    => '1987-09-23T00:00:00+02:00'
         ]);
     }
+
+
+    public function testUpdateProduct(): void
+    {
+        $client = static::createClient();
+
+        $client->request('PUT', '/api/products/1', ['json' => [
+            'description' => 'updated description',
+        ]]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            '@id'         => '/api/products/1',
+            'description' => 'updated description',
+        ]);
+    }
+
+
+    public function testCreateInvalidProduct(): void
+    {
+        static::createClient()->request('POST', '/api/products', ['json' => [
+            'partNumber'          => '1234',
+            'name'         => 'Test Product',
+            'description'  => 'Test Description',
+            'issueDate'    => '1987-09-23',
+            'manufacturer' => null,
+        ]]);
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        $this->assertJsonContains([
+            '@context'          => '/api/contexts/ConstraintViolationList',
+            '@type'             => 'ConstraintViolationList',
+            'hydra:title'       => 'An error occurred',
+            'hydra:description' => 'manufacturer: This value should not be null.',
+        ]);
+    }
 }
