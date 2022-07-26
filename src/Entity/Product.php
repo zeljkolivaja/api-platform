@@ -22,8 +22,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[
     ApiResource(
+        attributes: ["pagination_items_per_page" => 5],
         normalizationContext: ['groups' => ['product.read']],
         denormalizationContext: ['groups' => ['product.write']]
+
     ),
     ApiFilter(
         SearchFilter::class,
