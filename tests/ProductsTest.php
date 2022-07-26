@@ -53,4 +53,31 @@ class ProductTest extends ApiTestCase
             ],
         ]);
     }
+
+    public function testCreateProduct(): void
+    {
+        static::createClient()->request('POST', '/api/products', [
+            'json' => [
+                'partNumber'          => '1111',
+                'name'         => 'Test Product',
+                'description'  => 'Test Description',
+                'issueDate'    => '1987-09-23',
+                'manufacturer' => '/api/manufacturers/1',
+            ]
+        ]);
+
+        $this->assertResponseStatusCodeSame(201);
+
+        $this->assertResponseHeaderSame(
+            'content-type',
+            'application/ld+json; charset=utf-8'
+        );
+
+        $this->assertJsonContains([
+            'partNumber'          => '1111',
+            'name'         => 'Test Product',
+            'description'  => 'Test Description',
+            'issueDate'    => '1987-09-23T00:00:00+02:00'
+        ]);
+    }
 }

@@ -58,7 +58,10 @@ class Product
      *
      * @ORM\Column
      */
-    #[Assert\NotNull()]
+    #[
+        Assert\NotNull(),
+        Groups(['product.read', 'product.write'])
+    ]
     private ?string $partNumber = null;
 
     /**
@@ -103,7 +106,7 @@ class Product
      */
     #[
         Assert\NotNull(),
-        Groups(['product.read'])
+        Groups(['product.read', 'product.write'])
     ]
     private ?Manufacturer $manufacturer = null;
 
