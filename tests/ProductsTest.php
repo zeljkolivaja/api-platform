@@ -11,7 +11,7 @@ class ProductTest extends ApiTestCase
 
     public function testGetCollection(): void
     {
-        static::createClient()->request('GET', '/api/products');
+        $response = static::createClient()->request('GET', '/api/products');
 
         $this->assertResponseIsSuccessful();
 
@@ -31,6 +31,25 @@ class ProductTest extends ApiTestCase
                 'hydra:first' => '/api/products?page=1',
                 'hydra:last'  => '/api/products?page=20',
                 'hydra:next'  => '/api/products?page=2',
+            ],
+        ]);
+
+        $this->assertCount(5, $response->toArray()['hydra:member']);
+    }
+
+
+    public function testPagination(): void
+    {
+        $response = static::createClient()->request('GET', '/api/products?page=2');
+
+        $this->assertJsonContains([
+            'hydra:view'       => [
+                '@id'            => '/api/products?page=2',
+                '@type'          => 'hydra:PartialCollectionView',
+                'hydra:first'    => '/api/products?page=1',
+                'hydra:last'     => '/api/products?page=20',
+                'hydra:previous' => '/api/products?page=1',
+                'hydra:next'     => '/api/products?page=3',
             ],
         ]);
     }
