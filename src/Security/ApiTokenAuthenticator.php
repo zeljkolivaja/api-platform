@@ -26,6 +26,7 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): ?bool
     {
+        //if user access /api/ path require authentication
         $path = $request->getPathInfo();
         return substr($path, 0, 5) === "/api/";
     }
