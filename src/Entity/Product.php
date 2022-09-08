@@ -19,12 +19,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  * 
  * @ORM\Entity
  */
-
 #[
     ApiResource(
         attributes: ["pagination_items_per_page" => 5],
         normalizationContext: ['groups' => ['product.read']],
-        denormalizationContext: ['groups' => ['product.write']]
+        denormalizationContext: ['groups' => ['product.write']],
+        itemOperations: [
+            'get',
+            'put' => ['security' => 'is_granted("ROLE_USER") and object.getOwner()==user']
+        ],
+        collectionOperations: [
+            'get',
+            'post' => ['security' => 'is_granted("ROLE_ADMIN")']
+        ],
 
     ),
     ApiFilter(
@@ -110,6 +117,14 @@ class Product
     ]
     private ?Manufacturer $manufacturer = null;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="products")
+     */
+    #[
+        Groups(['product.read', 'product.write'])
+    ]
+    private $owner;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -167,5 +182,17 @@ class Product
     public function setManufacturer($manufacturer)
     {
         $this->manufacturer = $manufacturer;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 }
